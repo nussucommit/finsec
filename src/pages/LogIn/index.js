@@ -22,6 +22,7 @@ class LogIn extends Component {
     e.preventDefault();
     this.setState({ error: '' });
     try {
+      console.log(this.state.email);
       await signin(this.state.email, this.state.password);
     } catch (error) {
       this.setState({ error: error.message });
