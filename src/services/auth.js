@@ -20,22 +20,3 @@ export const signin = (email, password) => {
 export const signout = () => {
   return auth().signOut();
 }
-
-export const signInWithGoogle = () => {
-  const provider = new auth.GoogleAuthProvider();
-  return auth().signInWithPopup(provider);
-}
-
-export const signUpWithGoogle = (name) => {
-  const provider = new auth.GoogleAuthProvider();
-  return auth().signInWithPopup(provider)
-  .then(registeredUser => {
-    firestore.collection("users")
-    .doc(registeredUser.user.uid)
-    .set({
-      uid: registeredUser.user.uid,
-      name,
-      rooms: ['']
-    })
-  });
-}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { signin, signInWithGoogle } from '../../services/auth'
+import { signin } from '../../services/auth'
 import './styles.css';
 
 class LogIn extends Component {
@@ -22,16 +22,7 @@ class LogIn extends Component {
     e.preventDefault();
     this.setState({ error: '' });
     try {
-      console.log(this.state.email);
       await signin(this.state.email, this.state.password);
-    } catch (error) {
-      this.setState({ error: error.message });
-    }
-  };
-
-  googleSignIn = async () => {
-    try {
-      await signInWithGoogle();
     } catch (error) {
       this.setState({ error: error.message });
     }
@@ -67,7 +58,6 @@ class LogIn extends Component {
           </div>
         </div>
         <button className="ui button" onClick={this.handleSubmit}>Login</button>
-        <button className="ui button" onClick={this.googleSignIn}>Login with Google</button>
       </div>
     );
   }

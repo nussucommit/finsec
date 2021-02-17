@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { signup, signUpWithGoogle } from '../../services/auth';
+import { signup } from '../../services/auth';
 import './styles.css'
 
 class SignUp extends Component {
@@ -32,14 +32,6 @@ class SignUp extends Component {
       } catch (error) {
         this.setState({ error: error.message });
       }
-    }
-  };
-
-  googleSignIn = async () => {
-    try {
-      await signUpWithGoogle(this.state.name);
-    } catch (error) {
-      this.setState({ error: error.message });
     }
   };
 
@@ -97,7 +89,6 @@ class SignUp extends Component {
           </div>
         </div>
         <button className="ui button" onClick={this.handleSubmit}>Sign Up</button>
-        <button className="ui button" onClick={this.googleSignIn}>Sign Up with Google</button>
       </div>
     );
   }
