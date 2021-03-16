@@ -35,9 +35,20 @@ class UserTest(TestCase):
             "password": "success"
         })
         self.assertEqual(response.status_code, 201)
-        
         user = User.objects.get(username="test2")
         self.assertEqual(user.email, "test2@example.com")
         self.assertTrue(user.check_password("success"))
+        self.assertEqual(user.role, User.TREASURER)
+
+        # Filter out roles and always assign treasurer
+        response = c.post('/api/users', {
+            "username": "test3",
+            "email": "test3@example.com",
+            "password": "attempt_to_register_as_president",
+            "role": 3
+        })
+        self.assertEqual(response.status_code, 201)
+        user = User.objects.get(username="test3")
+        self.assertEqual(user.role, User.TREASURER)
 
         
