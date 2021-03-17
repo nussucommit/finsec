@@ -1,21 +1,17 @@
+from django.contrib.auth.models import AbstractUser, Group
+from django.core.validators import RegexValidator
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-
 class User(AbstractUser):
-    TREASURER = 0
-    FINANCIAL_EXECUTIVE = 1
-    FINANCIAL_SECRETARY = 2
-    NUSSU_PRESIDENT = 3
+    phone_number_validator = RegexValidator(r'(8[1-8][0-9]{6}|9[0-8][0-9]{6})', 'Invalid phone number.')
 
-    ROLE_CHOICES = [
-        (TREASURER, 'Treasurer'),
-        (FINANCIAL_EXECUTIVE, 'Financial Executive'),
-        (FINANCIAL_SECRETARY, 'Financial Secretary'),
-        (NUSSU_PRESIDENT, 'NUSSU President')
-    ]
-
+    contact_no = models.CharField(
+        blank=False, 
+        default='00000000', 
+        validators=[phone_number_validator], 
+        max_length=8)
     # Enforce email uniqueness
-    email = models.EmailField(_('email address'), unique=True, blank=True)
-    role = models.IntegerField(blank=True, choices=ROLE_CHOICES, default=0)
+    email = models.EmailField(_('email address'), unique=True)
+    name = models.CharField(max_length=256, unique=True)
+    subcommittee = models.CharField(max_length=256)
