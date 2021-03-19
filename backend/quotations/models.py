@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.db import models
 
 from users.models import User
@@ -56,4 +57,54 @@ class Quotation(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=DRAFT)
+
+    approvers_order = models.ManyToManyField(Group, through='ProcessStage')
+
+### Rules models
+class Process(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    min_amount = models.DecimalField(
+        default=0.00, 
+        decimal_places=2, 
+        max_digits=10)
+    max_amount = models.DecimalField(
+        default=0.00, 
+        decimal_places=2, 
+        max_digits=10)
+    order = models.PositiveSmallIntegerField(unique=True)
+
+    groups_order = models.ManyToManyField(Group, through='ProcessGroupPrecedence')
+
+class ProcessGroupPrecedence(models.Model):
+    process = models.ForeignKey(Process, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    order = models.PositiveSmallIntegerField()
+
+    class Meta:
+        unique_together = (
+            ('process', 'group'),
+            ('process', 'order'),
+        )
+
+class ProcessStage(models.Model):
+    UNPROCESSED = 0
+    APPROVED = 1
+    REJECTED = 2
+
+    STATUS_CHOICES = (
+        (UNPROCESSED, "unprocessed"),
+        (APPROVED, "approved"),
+        (REJECTED, "rejected"),
+    )
+
+    quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    order = models.PositiveSmallIntegerField()
+    status = models.IntegerField(choices=STATUS_CHOICES, default=UNPROCESSED, blank=True)
+
+    class Meta:
+        unique_together = (
+            ('quotation', 'group'),
+            ('quotation', 'order'),
+        )
     
