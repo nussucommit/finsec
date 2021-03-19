@@ -1,11 +1,10 @@
 from django.contrib.auth.models import AbstractUser, Group
-from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-class User(AbstractUser):
-    phone_number_validator = RegexValidator(r'(8[1-8][0-9]{6}|9[0-8][0-9]{6})', 'Invalid phone number.')
+from utils.validators import phone_number_validator
 
+class User(AbstractUser):
     contact_no = models.CharField(
         blank=False, 
         default='00000000', 

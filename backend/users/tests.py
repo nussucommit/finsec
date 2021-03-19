@@ -6,10 +6,6 @@ from .models import User
 
 class UserTest(TestCase):
     def setUp(self):
-        self.params = {
-            "contact_no": "88888888",
-            "subcommittee": "NUSSU"
-        }
         user = User.objects.create(
             name="John Smith", 
             username="test", 

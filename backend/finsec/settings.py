@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     ### Third party section
     'rest_framework',
     ### Local app section
+    'quotations.apps.QuotationsConfig',
     'users.apps.UsersConfig',
 ]
 
