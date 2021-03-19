@@ -20,6 +20,12 @@ class SupplierSerializer(serializers.ModelSerializer):
             'supplier_name',
             'unit_price'
         ]
+        extra_kwargs = {
+            'selected': {'read_only': True},
+        }
+
+class SupplierDetailSerializer(SupplierSerializer):
+    quotation = serializers.PrimaryKeyRelatedField(queryset=Quotation.objects.all(), read_only=True)
 
 class QuotationSerializer(serializers.ModelSerializer):
     selected_supplier = SupplierSerializer(source='get_selected_supplier', read_only=True, allow_null=True)
