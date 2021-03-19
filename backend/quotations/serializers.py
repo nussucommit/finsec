@@ -25,7 +25,7 @@ class SupplierSerializer(serializers.ModelSerializer):
         }
 
 class SupplierDetailSerializer(SupplierSerializer):
-    quotation = serializers.PrimaryKeyRelatedField(queryset=Quotation.objects.all(), read_only=True)
+    quotation = serializers.PrimaryKeyRelatedField(read_only=True)
 
 class QuotationSerializer(serializers.ModelSerializer):
     selected_supplier = SupplierSerializer(source='get_selected_supplier', read_only=True, allow_null=True)
