@@ -20,8 +20,11 @@ class SupplierRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierDetailSerializer
 
-### Patch views
+class ProcessListCreateView(generics.ListCreateAPIView):
+    queryset = Process.objects.all().order_by('order')
+    serializer_class = ProcessSerializer
 
+### Patch views
 class SelectSupplierView(views.APIView):
     def patch(self, request, pk, format=None):
         try:
@@ -93,7 +96,3 @@ class RejectQuotationView(views.APIView):
         quotation.status = Quotation.REJECTED
         quotation.save()
         return Response({'details': 'quotation rejected.'}, status=status.HTTP_200_OK)
-
-class ProcessListCreateView(generics.ListCreateAPIView):
-    queryset = Process.objects.all().order_by('order')
-    serializer_class = ProcessSerializer
