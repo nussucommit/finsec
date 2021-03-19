@@ -1,6 +1,13 @@
+from django.contrib.auth.models import Group
 from rest_framework import serializers
 
-from .models import Quotation, Supplier
+from .models import (
+    Process, 
+    ProcessGroupPrecedence,
+    ProcessStage,
+    Quotation, 
+    Supplier,
+)
 from users.serializers import DisplayUserSerializer
 
 
@@ -9,7 +16,7 @@ class SupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supplier
-        fields = [
+        fields = (
             'document',
             'contact_number',
             'contact_person',
@@ -18,8 +25,8 @@ class SupplierSerializer(serializers.ModelSerializer):
             'remarks',
             'selected',
             'supplier_name',
-            'unit_price'
-        ]
+            'unit_price',
+        )
         extra_kwargs = {
             'selected': {'read_only': True},
         }
@@ -27,14 +34,29 @@ class SupplierSerializer(serializers.ModelSerializer):
 class SupplierDetailSerializer(SupplierSerializer):
     quotation = serializers.PrimaryKeyRelatedField(read_only=True)
 
+class ProcessStageSerializer(serializers.ModelSerializer):
+    group = serializers.CharField(source='group.name', read_only=False)
+    class Meta:
+        model = ProcessStage
+        fields = (
+            'group',
+            'order',
+            'status'
+        )
+        extra_kwargs = {
+            'status': {'read_only': True},
+        }
+
 class QuotationSerializer(serializers.ModelSerializer):
+    approvers = ProcessStageSerializer(many=True, read_only=True)
     selected_supplier = SupplierSerializer(source='get_selected_supplier', read_only=True, allow_null=True)
     student = DisplayUserSerializer(read_only=True)
     suppliers = SupplierSerializer(many=True, read_only=True)
 
     class Meta:
         model = Quotation
-        fields = [
+        fields = (
+            'approvers',
             'event_name',
             'id',
             'item_description',
@@ -44,8 +66,8 @@ class QuotationSerializer(serializers.ModelSerializer):
             'status',
             'student',
             'sum',
-            'suppliers'
-        ]
+            'suppliers',
+        )
         extra_kwargs = {
             'status': {'read_only': True},
         }
@@ -72,3 +94,44 @@ class QuotationSerializer(serializers.ModelSerializer):
 # Extra declaration because sum is a reserved keyword
 QuotationSerializer._declared_fields["sum"] = serializers.DecimalField(
     source='get_sum', max_digits=8, decimal_places=2, required=False, read_only=True)
+
+### Rules-related serializers
+class ProcessGroupPrecedenceSerializer(serializers.ModelSerializer):
+    group = serializers.CharField(source='group.name', read_only=False)
+    
+    class Meta:
+        model = ProcessGroupPrecedence
+        fields = (
+            'group',
+            'order',
+        )
+
+class ProcessSerializer(serializers.ModelSerializer):
+    groups = ProcessGroupPrecedenceSerializer(
+        many=True, 
+        read_only=False, 
+        source='groups_order')
+    
+    class Meta:
+        model = Process
+        fields = (
+            'groups',
+            'max_amount',
+            'min_amount',
+            'name',
+            'order',
+        )
+
+    def create(self, validated_data):
+        groups = validated_data.pop('groups')
+        process = Process.objects.create(**validated_data)
+
+        for group_info in groups:
+            group = Group.objects.get_or_create(name=group['name'])
+            group.save()
+
+            process_group_precedence = ProcessGroupPrecedence.objects.create(process=process, group=group, order=group['order'])
+            process_group_precedence.save()
+
+        return process
+

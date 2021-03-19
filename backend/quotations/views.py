@@ -1,8 +1,8 @@
 from rest_framework import generics, status, views
 from rest_framework.response import Response
 
-from .models import Quotation, Supplier
-from .serializers import QuotationSerializer, SupplierDetailSerializer, SupplierSerializer
+from .models import Process, Quotation, Supplier
+from .serializers import ProcessSerializer, QuotationSerializer, SupplierDetailSerializer, SupplierSerializer
 
 class QuotationListCreateView(generics.ListCreateAPIView):
     queryset = Quotation.objects.all()
@@ -85,3 +85,7 @@ class RejectQuotationView(views.APIView):
         quotation.status = Quotation.REJECTED
         quotation.save()
         return Response({'details': 'quotation rejected.'}, status=status.HTTP_200_OK)
+
+class ProcessListCreateView(generics.ListCreateAPIView):
+    queryset = Process.objects.all().order_by('order')
+    serializer_class = ProcessSerializer
