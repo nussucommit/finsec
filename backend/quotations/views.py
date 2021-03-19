@@ -1,7 +1,7 @@
 from rest_framework import generics, status, views
 from rest_framework.response import Response
 
-from .models import Process, Quotation, Supplier
+from .models import Process, ProcessStage, Quotation, Supplier
 from .serializers import ProcessSerializer, QuotationSerializer, SupplierDetailSerializer, SupplierSerializer
 
 class QuotationListCreateView(generics.ListCreateAPIView):
@@ -55,6 +55,14 @@ class SubmitQuotationView(views.APIView):
             return Response({'details': 'quotation does not have selected supplier.'}, status=status.HTTP_400_BAD_REQUEST)
 
         quotation.status = Quotation.SUBMITTED
+
+        total_sum = quotation.get_sum()
+        for process in Process.objects.all().order_by('order'):
+            if total_sum >= process.min_amount and total_sum <= process.max_amount:
+                for group_order in process.groups_order.all():
+                    process_stage = ProcessStage.objects.create(quotation=quotation, group=group_order.group, order=group_order.order)
+                    process_stage.save()
+
         quotation.save()
         return Response({'details': 'quotation submitted.'}, status=status.HTTP_200_OK)
 

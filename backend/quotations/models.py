@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth.models import Group
 from django.db import models
 
@@ -59,6 +61,14 @@ class Quotation(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=DRAFT)
 
     approvers_order = models.ManyToManyField(Group, through='ProcessStage')
+
+    def get_sum(self):
+        try:
+            supplier = Supplier.objects.get(quotation=quotation, selected=True)
+        except Supplier.DoesNotExist:
+            return 0
+        
+        return Decimal(self.item_quantity) * supplier.unit_price
 
 ### Rules models
 class Process(models.Model):
