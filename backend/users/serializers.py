@@ -23,3 +23,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+class DisplayUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'contact_no',
+            'name',
+            'subcommittee',
+        ]
+        read_only_fields = fields

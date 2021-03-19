@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     ### Third party section
     'rest_framework',
     ### Local app section
+    'quotations.apps.QuotationsConfig',
     'users.apps.UsersConfig',
 ]
 
@@ -62,6 +63,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_PAGINATION_CLASS': (
+        'finsec.pagination.StandardResultsSetPagination'
     ),
 }
 

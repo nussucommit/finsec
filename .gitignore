@@ -196,5 +196,8 @@ target/
 .env
 db.sqlite3
 
+### Temp files ###
+**/uploads/*
+
 ### VS Code ###
 .vscode
