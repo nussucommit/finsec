@@ -80,6 +80,9 @@ class QuotationSerializer(serializers.ModelSerializer):
         
         return None
 
+    def get_sum(self, quotation):
+        return quotation.get_sum()
+
     ### Additional create steps
     def create(self, validated_data):
         quotation = Quotation.objects.create(student=self.context['request'].user, **validated_data)
