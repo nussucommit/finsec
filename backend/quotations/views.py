@@ -1,31 +1,37 @@
-from rest_framework import generics, status, views
+from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 
 from .models import Process, ProcessStage, Quotation, Supplier
 from .serializers import ProcessSerializer, QuotationSerializer, SupplierDetailSerializer, SupplierSerializer
 
 class QuotationListCreateView(generics.ListCreateAPIView):
+    permission_classes = permissions.IsAuthenticated
     queryset = Quotation.objects.all()
     serializer_class = QuotationSerializer
 
 class QuotationRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = permissions.IsAuthenticated
     queryset = Quotation.objects.all()
     serializer_class = QuotationSerializer
 
 class SupplierListCreateView(generics.ListCreateAPIView):
+    permission_classes = permissions.IsAuthenticated
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
 
 class SupplierRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = permissions.IsAuthenticated
     queryset = Supplier.objects.all()
     serializer_class = SupplierDetailSerializer
 
 class ProcessListCreateView(generics.ListCreateAPIView):
+    permission_classes = permissions.IsAuthenticated
     queryset = Process.objects.all().order_by('order')
     serializer_class = ProcessSerializer
 
 ### Patch views
 class SelectSupplierView(views.APIView):
+    permission_classes = permissions.IsAuthenticated
     def patch(self, request, pk, format=None):
         try:
             supplier = Supplier.objects.get(pk=pk)
@@ -43,6 +49,7 @@ class SelectSupplierView(views.APIView):
         return Response({'details': 'supplier selected.'}, status=status.HTTP_200_OK)
 
 class SubmitQuotationView(views.APIView):
+    permission_classes = permissions.IsAuthenticated
     def patch(self, request, pk, format=None):
         try:
             quotation = Quotation.objects.get(pk=pk)
@@ -70,6 +77,7 @@ class SubmitQuotationView(views.APIView):
         return Response({'details': 'quotation submitted.'}, status=status.HTTP_200_OK)
 
 class ApproveQuotationView(views.APIView):
+    permission_classes = permissions.IsAuthenticated
     def patch(self, request, pk, format=None):
         try:
             quotation = Quotation.objects.get(pk=pk)
@@ -84,6 +92,7 @@ class ApproveQuotationView(views.APIView):
         return Response({'details': 'quotation approved.'}, status=status.HTTP_200_OK)
 
 class RejectQuotationView(views.APIView):
+    permission_classes = permissions.IsAuthenticated
     def patch(self, request, pk, format=None):
         try:
             quotation = Quotation.objects.get(pk=pk)
