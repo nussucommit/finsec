@@ -41,6 +41,7 @@ jobs:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          DISABLE_ESLINT_PLUGIN: true
           REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}
           REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
           REACT_APP_PROJECT_ID: ${{ secrets.REACT_APP_PROJECT_ID }}
