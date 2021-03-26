@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { signin } from '../../services/auth'
+import { signin } from '../../services/auth';
 import './styles.css';
 
 class LogIn extends Component {
-  state = {
-    error: null,
-    email: '',
-    password: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      email: '',
+      password: '',
+    };
+  }
 
   componentDidMount() {
   }
@@ -19,16 +22,31 @@ class LogIn extends Component {
   };
 
   handleSubmit = async (e) => {
+    const {
+      password, email,
+    } = this.state;
     e.preventDefault();
     this.setState({ error: '' });
     try {
-      await signin(this.state.email, this.state.password);
+      await signin(email, password);
     } catch (error) {
       this.setState({ error: error.message });
     }
   };
 
   render() {
+    const {
+      email, password, error,
+    } = this.state;
+    if (error) {
+      // You can render any custom fallback UI
+      return (
+        <h1>
+          Something went wrong.
+          {error}
+        </h1>
+      );
+    }
     return (
       <div className="ui container" id="signin">
         <div className="ui form">
@@ -39,7 +57,7 @@ class LogIn extends Component {
               name="email"
               placeholder="Email address"
               onChange={this.handleChange}
-              value={this.state.email}
+              value={email}
               required
             />
           </div>
@@ -50,14 +68,14 @@ class LogIn extends Component {
               name="password"
               placeholder="Password"
               onChange={this.handleChange}
-              value={this.state.password}
+              value={password}
               required
               pattern="(?=.*\d)(?=.*[a-zA-Z]).{8,}"
               title="Password must be a combination of number and letters, and at least 8 or more characters"
             />
           </div>
         </div>
-        <button className="ui button" onClick={this.handleSubmit}>Login</button>
+        <button className="ui button" onClick={this.handleSubmit} type="submit">Login</button>
       </div>
     );
   }
