@@ -4,24 +4,29 @@ import PropTypes from 'prop-types';
 import {
   Route,
   Redirect,
+  useLocation,
 } from 'react-router-dom';
 
 export const PrivateRoute = ({
   component: PrivateView,
   authenticated,
   ...rest
-}) => (
-  <Route
-    {...rest}
-    render={(props) => (authenticated ? (
-      <PrivateView {...props} />
-    ) : (
-      <Redirect
-        to={{ pathname: '/login', state: { from: props.location } }}
-      />
-    ))}
-  />
-);
+}) => {
+  const location = useLocation();
+  console.log(location);
+  return (
+    <Route
+      {...rest}
+      render={(props) => (authenticated ? (
+        <PrivateView {...props} />
+      ) : (
+        <Redirect
+          to={{ pathname: '/login', state: { from: props.location } }}
+        />
+      ))}
+    />
+  );
+};
 
 PrivateRoute.propTypes = {
   component: PropTypes.elementType.isRequired,

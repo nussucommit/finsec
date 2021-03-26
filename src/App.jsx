@@ -20,6 +20,7 @@ class App extends Component {
     };
   }
 
+  // Refactor this part https://reactrouter.com/web/example/auth-workflow
   componentDidMount() {
     this.setState({ loading: true });
     auth().onAuthStateChanged((user) => {
