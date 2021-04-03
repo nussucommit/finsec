@@ -86,14 +86,13 @@ export default function NavBar() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>
-                  
-                <Link to="/home">Home</Link>
-
+                  <Link to="/home">Home</Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                  <Link to="/quotation">Quotation</Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                    <Link to="/submission">Submission</Link>
-                  
-
                 </MenuItem>
               </Menu>
             </div>

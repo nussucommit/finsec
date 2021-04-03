@@ -8,6 +8,7 @@ import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import Submission from './pages/Submission';
+import Quotation from './pages/Quotation';
 import NavBar from './components/NavBar';
 import { PublicRoute, PrivateRoute } from './router/index';
 
@@ -64,15 +65,20 @@ class App extends Component {
               authenticated={authenticated}
               component={Home}
             />
-            <PublicRoute
-              path="/signup"
-              authenticated={authenticated}
-              component={SignUp}
-            />
             <PrivateRoute
               path="/submission"
               authenticated={authenticated}
               component={Submission}
+            />
+            <PrivateRoute
+              path="/quotation"
+              authenticated={authenticated}
+              component={Quotation}
+            />
+            <PublicRoute
+              path="/signup"
+              authenticated={authenticated}
+              component={SignUp}
             />
             <PublicRoute
               exact
@@ -82,7 +88,7 @@ class App extends Component {
             />
             <PublicRoute
               path="/login"
-              authenticated
+              authenticated={authenticated}
               component={LogIn}
             />
           </Switch>
