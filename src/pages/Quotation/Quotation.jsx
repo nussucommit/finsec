@@ -1,12 +1,10 @@
 import React from 'react';
-import QuotationTable from './../../components/QuotationTable';
+import QuotationTable from '../../components/Quotation/QuotationTable';
 
-const QuotationDetails = props => {
-  return (
-    <div>
-        <QuotationTable />
-    </div>
-  );
-};
+const QuotationDetails = () => (
+  <div>
+    <QuotationTable />
+  </div>
+);
 
 export default QuotationDetails;

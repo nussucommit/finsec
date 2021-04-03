@@ -1,1 +1,3 @@
-export { default as Quotation } from './Quotation';
+import quotation from './Quotation';
+
+export default quotation;

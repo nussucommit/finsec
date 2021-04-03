@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Link,
 } from 'react-router-dom';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import Submission from './pages/Submission';
+import Quotation from './pages/Quotation';
+import NavBar from './components/NavBar';
 import { PublicRoute, PrivateRoute } from './router/index';
 
 import { auth, firestore } from './services/firebase';
@@ -57,31 +58,27 @@ class App extends Component {
     ) : (
       <Router>
         <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/home">Home</Link>
-              </li>
-              <li>
-                <Link to="/submission">Submission</Link>
-              </li>
-            </ul>
-          </nav>
+          <NavBar />
           <Switch>
             <PrivateRoute
               path="/home"
               authenticated={authenticated}
               component={Home}
             />
-            <PublicRoute
-              path="/signup"
-              authenticated={authenticated}
-              component={SignUp}
-            />
             <PrivateRoute
               path="/submission"
               authenticated={authenticated}
               component={Submission}
+            />
+            <PrivateRoute
+              path="/quotation"
+              authenticated={authenticated}
+              component={Quotation}
+            />
+            <PublicRoute
+              path="/signup"
+              authenticated={authenticated}
+              component={SignUp}
             />
             <PublicRoute
               exact
@@ -91,7 +88,7 @@ class App extends Component {
             />
             <PublicRoute
               path="/login"
-              authenticated
+              authenticated={authenticated}
               component={LogIn}
             />
           </Switch>
