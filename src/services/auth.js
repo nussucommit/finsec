@@ -8,10 +8,11 @@ export const signup = (email, password, name) => auth()
       .set({
         uid: registeredUser.user.uid,
         name,
-        rooms: [],
       });
   });
 
-export const signin = (email, password) => auth().signInWithEmailAndPassword(email, password);
+export const signin = (email, password) => {
+  auth().signInWithEmailAndPassword(email, password);
+};
 
 export const signout = () => auth().signOut();

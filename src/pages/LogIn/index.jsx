@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { signin } from '../../services/auth';
+import firebase from 'firebase';
+import { firestore } from '../../services/firebase';
 import './styles.css';
 
 class LogIn extends Component {
@@ -29,6 +31,15 @@ class LogIn extends Component {
     this.setState({ error: '' });
     try {
       await signin(email, password);
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in.
+          console.log("user signed in")
+        } else {
+          // No user is signed in.
+          console.log("sign in fail")
+        }
+      });
     } catch (error) {
       this.setState({ error: error.message });
     }

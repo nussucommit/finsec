@@ -1,7 +1,7 @@
-import firebase from 'firebase/app';
-import 'firebase/auth'; // for authentication
-import 'firebase/firestore'; // for cloud firestore
-import 'firebase/storage'; // for storage
+import firebase from 'firebase';
+// import 'firebase/auth'; // for authentication
+// import 'firebase/firestore'; // for cloud firestore
+// import 'firebase/storage'; // for storage
 // import 'firebase/database';    // for realtime database
 // import 'firebase/messaging';   // for cloud messaging
 // import 'firebase/functions';   // for cloud functions
@@ -14,9 +14,17 @@ const config = {
   messagingSenderId: process.env.REACT_APP_SENDER_ID,
   appId: process.env.REACT_APP_APP_ID,
 };
-firebase.initializeApp(config);
 
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+} else {
+  firebase.app().delete().then(() => {
+    firebase.initializeApp(config);
+  }); // if already initialized, use that one
+}
+
+export default firebase;
 export const { auth } = firebase;
 export const firestore = firebase.firestore();
-// export const storage = firebase.storage().ref();
+export const storage = firebase.storage();
 // export const db = firebase.database();

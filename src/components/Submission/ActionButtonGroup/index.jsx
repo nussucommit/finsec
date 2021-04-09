@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SendIcon from '@material-ui/icons/Send';
-
+import firebase, { storage } from '../../../services/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ActionButtons() {
+function ActionButtons(props) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -44,11 +44,13 @@ function ActionButtons() {
                 >
                     Delete
                 </Button>
+                <input type="file" name="file" id="selectedInput" onChange={(e) => props.handleChange(e.target.files)} onClick={e => (e.target.value = null)}/>
                 <Button
                     variant='contained'
                     color='default'
                     className={classes.button}
                     startIcon={<CloudUploadIcon />}
+                    onClick={(e) => props.handleSave()}
                 >
                     Upload
                 </Button>
@@ -71,13 +73,38 @@ function ActionButtons() {
 class ActionButtonGroup extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      files: null
+    };
+
+    this.inputRef = React.createRef();
+    this.handleSave = this.handleSave.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  
   }
 
   componentDidMount() {}
 
+  handleChange = (files) => {
+    this.setState({
+      files: files
+    })
+  }
+
+  handleSave = () => {
+    let bucketName = 'files'
+    let file = this.state.files[0]
+    let storageRef = storage.ref(`${bucketName}/${file.name}`)
+    let uploadTask = storageRef.put(file)
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+      () => {
+        console.log("file uploaded!")
+        document.getElementById("selectedInput").value = "";
+      })
+  }
+
   render() {
-    return <ActionButtons />;
+    return <ActionButtons ref={this.inputRef} handleSave={this.handleSave} handleChange={this.handleChange}/>
   }
 }
 
